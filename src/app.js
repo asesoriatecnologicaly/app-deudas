@@ -10,8 +10,7 @@ const PORT = process.env.PORT || 4000;
 
 // CORS: permitir el frontend de Hostinger y localhost para desarrollo
 const allowedOrigins = [
-  process.env.FRONTEND_URL,               // https://pale.asesoriatecnologicaly.com
-  "https://pale.asesoriatecnologicaly.com",
+  process.env.FRONTEND_URL,
   "https://palegreen-otter-518550.hostingersite.com",
   "http://localhost:5173",
   "http://localhost:3000",
