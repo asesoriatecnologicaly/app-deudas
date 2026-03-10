@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon src/app.js",
-    "start": "node src/app.js",
+    "start": "node boot.js",
     "postinstall": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:generate": "npx prisma generate"
