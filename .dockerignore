@@ -1,17 +1,9 @@
-# No subir la carpeta .git
 .git
 .gitignore
-
-# No subir node_modules locales (Windows)
 node_modules
-server/node_modules
-client/node_modules
-
-# Carpeta del frontend (no la usamos en esta imagen)
 client
-
-# Otros archivos que no hacen falta
 npm-debug.log
-*.log 
+*.log
 dist
 build
+.env

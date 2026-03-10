@@ -1,19 +1,18 @@
-# Imagen base: Node sobre Debian (NO Alpine)
 FROM node:18
 
-# Carpeta de trabajo dentro del contenedor
-WORKDIR /app/server
+WORKDIR /app
 
-# 1) Copiar sólo las dependencias del backend
-COPY server/package.json server/package-lock.json* ./
+# 1) Copiar dependencias
+COPY package.json package-lock.json* ./
 
-# 2) Instalar dependencias del backend
+# 2) Instalar dependencias
 RUN npm install
 
-# 3) Copiar el código del backend
-COPY server/. .
+# 3) Copiar codigo del backend
+COPY prisma ./prisma
+COPY src ./src
 
-# 4) Generar Prisma Client dentro del contenedor
+# 4) Generar Prisma Client
 RUN npx prisma generate
 
 # 5) Variables y puerto
