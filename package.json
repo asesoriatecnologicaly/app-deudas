@@ -1,7 +1,6 @@
 {
   "name": "deudas-server",
   "version": "1.0.0",
-  "type": "module",
   "main": "src/app.js",
   "engines": {
     "node": ">=18.0.0"
