@@ -1,0 +1,44 @@
+// Esquema PostgreSQL (Supabase) usado SOLO durante la migración.
+// Convive con schema.prisma (MySQL) para poder leer de un motor y escribir en
+// el otro sin romper producción. En el cutover, este contenido pasa a ser
+// schema.prisma y este archivo se elimina.
+//
+// Genera un cliente separado en node_modules/.prisma/client-pg
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_PG")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-pg"
+}
+
+model Customer {
+  id                    Int                @id @default(autoincrement())
+  name                  String
+  address               String?
+  phone                 String?
+  city                  String?
+  currentAccountBalance Decimal            @default(0.0) @db.Decimal(10, 2)
+
+  movements             CustomerMovement[]
+
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+}
+
+model CustomerMovement {
+  id          Int      @id @default(autoincrement())
+  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  Int
+
+  type        String // "DEBIT" | "CREDIT"
+  amount      Decimal  @db.Decimal(10, 2)
+  date        DateTime @default(now())
+  method      String?
+  description String?
+
+  createdAt   DateTime @default(now())
+}

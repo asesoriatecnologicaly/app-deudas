@@ -1,0 +1,45 @@
+// Esquema MySQL (Hostinger) — la base ANTERIOR, conservada como respaldo.
+// Ya no la usa la aplicación: existe para poder seguir leyendo la base vieja
+// y re-verificar la migración durante el período de prueba.
+// Cuando confirmes que Supabase anda bien, este archivo y schema.postgres.prisma
+// se pueden borrar junto con scripts/.
+//
+// Genera un cliente separado en node_modules/.prisma/client-mysql
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_MYSQL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-mysql"
+}
+
+model Customer {
+  id                    Int                @id @default(autoincrement())
+  name                  String
+  address               String?
+  phone                 String?
+  city                  String?
+  currentAccountBalance Decimal            @default(0.0) @db.Decimal(10, 2)
+
+  movements             CustomerMovement[]
+
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+}
+
+model CustomerMovement {
+  id          Int      @id @default(autoincrement())
+  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  Int
+
+  type        String
+  amount      Decimal  @db.Decimal(10, 2)
+  date        DateTime @default(now())
+  method      String?
+  description String?
+
+  createdAt   DateTime @default(now())
+}
