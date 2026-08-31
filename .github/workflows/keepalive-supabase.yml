@@ -1,0 +1,31 @@
+name: keepalive supabase
+
+# Supabase pausa los proyectos del plan gratuito tras 7 dias sin actividad en
+# la base. Este workflow consulta la API una vez por dia: eso dispara una query
+# real contra Supabase y reinicia ese contador, asi el proyecto nunca se pausa.
+#
+# Ademas sirve de monitoreo: si la API no responde 200, el workflow falla y
+# GitHub manda un mail avisando que la app esta caida.
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 09:00 en Argentina (UTC-3)
+  workflow_dispatch: # permite ejecutarlo a mano desde la pestana Actions
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar la API
+        run: |
+          code=$(curl -s -o /tmp/respuesta -w "%{http_code}" --max-time 60 \
+            https://pale.asesoriatecnologicaly.com/api/clientes-cc)
+          echo "HTTP $code"
+          head -c 300 /tmp/respuesta
+          echo
+          if [ "$code" != "200" ]; then
+            echo "::error::La API no respondio 200. Puede que el proyecto de Supabase este pausado."
+            exit 1
+          fi
+          clientes=$(grep -o '"id"' /tmp/respuesta | wc -l)
+          echo "OK: la API respondio con $clientes clientes."
